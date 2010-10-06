@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'ChromeIcon' target in the 'ChromeIcon' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

@@ -1,0 +1,29 @@
+#!/bin/sh
+# Author: willscott@gmail.com
+
+CHROME=/Applications/Chromium.app
+DATA="$HOME/Library/Application Support/Chromium"
+#CHROME=/Applications/Google\ Chrome.app
+#DATA="$HOME/Library/Application Support/Google/Chrome"
+
+# Make sure a profile was chosen
+if [ $# -eq 0 ]; then
+	echo "Usage: $0 <profile> [--chrome-arguments]"
+	exit 0;
+fi
+
+# Fork off of the shell to start a new process group.
+ARGS=($@)
+if [ "x$2" != "x--" ]; then
+	$0 $1 -- ${ARGS[@]:1} 1> /dev/null 2> /dev/null &
+	exit 0
+fi
+
+IDENTIFIER=`defaults read "$CHROME/Contents/Info" CFBundleIdentifier`
+EXECUTABLE=`defaults read "$CHROME/Contents/Info" CFBundleExecutable`
+
+#Set the custom icon for the SIMBL Plugin
+defaults write $IDENTIFIER CustomIcon "$DATA/$1/icon.png"
+
+#Run the App
+nohup "$CHROME/Contents/MacOS/$EXECUTABLE" --enable-udd-profiles --user-data-dir="$DATA/$1" ${ARGS[@]:2} 0<&- 2>&1 >/dev/null
